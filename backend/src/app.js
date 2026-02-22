@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import propertyRoutes from "./routes/propertyRoutes.js"; // Make sure this file exists
+import propertyRoutes from "./routes/propertyRoutes.js";
+import inquiryRoutes from "./routes/inquiryRoutes.js"; 
 
 const app = express();
 
@@ -15,5 +16,6 @@ app.get("/health", (req, res) => {
 
 // Property routes
 app.use("/api/properties", propertyRoutes);
+app.use("/api/inquiries", inquiryRoutes);
 
 export default app;
