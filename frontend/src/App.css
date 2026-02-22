@@ -32,9 +32,26 @@ nav a:hover {
   color: #ffcc00;
 }
 
-h1 {
-  color: #004080;
-  margin-top: 20px;
+.home {
+  position: absolute;
+  top: 110px;
+  left: 0;
+  width: 100%; 
+  text-align: center; 
+  padding: 20px;
+}
+
+.home h1 {
+  color: #000000;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 10px 0; /* bottom margin for spacing */
+}
+
+.home p {
+  font-size: 18px;
+  color: #333;
+  margin: 0; /* remove default margins */
 }
 
 .page-container {
