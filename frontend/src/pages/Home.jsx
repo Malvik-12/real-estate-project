@@ -1,44 +1,73 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import PropertyCard from "../components/PropertyCard";
 import "../styles/Home.css";
 
 const Home = () => {
   const [propertyType, setPropertyType] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("newest");
-  const [listings, setListings] = useState([]);
-  const [lands, setLands] = useState([]);
-  const [forsale, setForsale] = useState([]);
+  const [allProperties, setAllProperties] = useState([]);
 
-  // Fetch properties from backend
+  // Fetch once
   useEffect(() => {
-    const fetchProperties = async (type, setState) => {
+    const fetchProperties = async () => {
       try {
-        const res = await fetch(`http://localhost:5001/api/properties?type=${type}`);
+        const res = await fetch("http://localhost:5001/api/properties", {
+          cache: "no-store",
+        });
         const data = await res.json();
-        setState(data);
+        setAllProperties(data);
       } catch (err) {
         console.error("Error fetching properties:", err);
       }
     };
 
-    fetchProperties("home", setListings);
-    fetchProperties("land", setLands);
-    fetchProperties("forsale", setForsale);
+    fetchProperties();
   }, []);
+
+  // ✅ DERIVED DATA (NO setState)
+  const filteredProperties = useMemo(() => {
+    let data = [...allProperties];
+
+    // Search
+    if (searchTerm) {
+      data = data.filter(
+        (p) =>
+          p.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.location?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by type
+    if (propertyType) {
+      data = data.filter((p) => p.type === propertyType);
+    }
+
+    // Sort
+    if (sortOrder === "price-high") {
+      data.sort((a, b) => b.price - a.price);
+    } else if (sortOrder === "price-low") {
+      data.sort((a, b) => a.price - b.price);
+    } else if (sortOrder === "oldest") {
+      data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    } else {
+      data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+
+    return data;
+  }, [searchTerm, propertyType, sortOrder, allProperties]);
 
   return (
     <div className="home">
       <h1>Welcome to Bahumukhi Investment Company Private Limited</h1>
-      <p>Explore our properties and investment opportunities.</p>
 
-      {/* Search & Filter Section */}
+      {/* Search & Filter */}
       <div className="search-filter">
         <select value={propertyType} onChange={(e) => setPropertyType(e.target.value)}>
-          <option value="">Property Type</option>
+          <option value="">All Types</option>
           <option value="home">House</option>
           <option value="land">Land</option>
-          <option value="apartment">Apartment</option>
-          <option value="villa">Villa</option>
+          <option value="forsale">For Sale</option>
         </select>
 
         <input
@@ -47,7 +76,7 @@ const Home = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button>Search</button>
+         <button>Search</button>
 
         <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
           <option value="newest">Newest First</option>
@@ -57,22 +86,15 @@ const Home = () => {
         </select>
       </div>
 
-      {/* Listings Section */}
-      <div className="carousel-section">
-        <h2>Top Listings</h2>
-        {listings.length === 0 ? <p>No properties yet</p> : listings.map((p) => <div key={p.id}>{p.title}</div>)}
-      </div>
-
-      {/* Lands Section */}
-      <div className="carousel-section">
-        <h2>Lands</h2>
-        {lands.length === 0 ? <p>No lands yet</p> : lands.map((p) => <div key={p.id}>{p.title}</div>)}
-      </div>
-
-      {/* For Sale Section */}
-      <div className="carousel-section">
-        <h2>For Sale Properties</h2>
-        {forsale.length === 0 ? <p>No properties for sale yet</p> : forsale.map((p) => <div key={p.id}>{p.title}</div>)}
+      {/* Property Cards */}
+      <div className="property-grid">
+        {filteredProperties.length === 0 ? (
+          <p>No properties found</p>
+        ) : (
+          filteredProperties.map((p) => (
+            <PropertyCard key={p.id} property={p} />
+          ))
+        )}
       </div>
     </div>
   );

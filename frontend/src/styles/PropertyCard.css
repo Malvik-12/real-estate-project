@@ -1,0 +1,64 @@
+.property-card {
+  background: #fff;
+  border-bottom: 3px solid #00338d;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* This keeps the ribbon from leaking out */
+  transition: transform 0.3s ease;
+  width: 100%;
+  max-width: 380px;
+  position: relative; /* Context for absolute children */
+  margin-bottom: 20px;
+}
+
+.image-container {
+  position: relative;
+  height: 230px;
+  width: 100%;
+  background-color: #f0f0f0; /* Fallback color if image fails */
+}
+
+/* Updated Ribbon - Better positioning */
+.ribbon {
+  position: absolute;
+  top: 15px;
+  right: -35px;
+  background: #e62e43;
+  color: white;
+  padding: 5px 40px;
+  transform: rotate(45deg);
+  font-size: 11px;
+  font-weight: bold;
+  z-index: 5;
+}
+
+/* Darker Gradient for Visibility */
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 50px 15px 15px; /* More padding at top for smoother fade */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+  color: white;
+  z-index: 2;
+}
+
+.property-title {
+  margin: 0;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #ffffff !important;
+}
+
+.property-location {
+  margin: 5px 0 0;
+  font-size: 13px;
+  color: #ffffff; /* Explicitly white */
+  opacity: 1;
+}
+
+.property-body {
+  padding: 15px;
+  background: white; /* Ensures it covers anything behind it */
+}
