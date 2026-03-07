@@ -5,8 +5,14 @@ import toast from "react-hot-toast";
 const AddProperty = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
-  const [type, setType] = useState("home");
+  const [type, setType] = useState("");
   const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [area, setArea] = useState("");
+  const [beds, setBeds] = useState("");
+  
+  // --- NEW PARKING STATE ---
+  const [parking, setParking] = useState("");
   
   const [imageFiles, setImageFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
@@ -14,9 +20,7 @@ const AddProperty = () => {
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
-    // Revoke old URLs to prevent memory leaks
     previews.forEach(url => URL.revokeObjectURL(url));
-
     const files = Array.from(e.target.files);
     
     if (files.length > 5) {
@@ -46,8 +50,14 @@ const AddProperty = () => {
     formData.append("price", price);
     formData.append("type", type);
     formData.append("description", description);
+    formData.append("location", location);
+    formData.append("area", area);
+    formData.append("beds", beds);
 
-    // Append each file to 'images' (matches your Multer upload.array("images"))
+    // --- APPEND PARKING TO FORMDATA ---
+    // We send it as a string here; backend parseInt() handles it.
+    formData.append("parking", parking || 0); 
+
     imageFiles.forEach((file) => {
       formData.append("images", file);
     });
@@ -85,19 +95,57 @@ const AddProperty = () => {
         />
 
         <input 
-          type="number" 
-          placeholder="Price (Nrs)" 
-          value={price} 
-          onChange={(e) => setPrice(e.target.value)} 
+          type="text" 
+          placeholder="Location (e.g., Lalitpur, Bhaisepati)" 
+          value={location} 
+          onChange={(e) => setLocation(e.target.value)} 
           required 
           style={inputStyle}
         />
-        
-        <select value={type} onChange={(e) => setType(e.target.value)} style={inputStyle}>
-          <option value="home">House</option>
-          <option value="land">Land</option>
-          <option value="forsale">For Sale</option>
-        </select>
+
+        <div style={{ display: "flex", gap: "10px" }}>
+          <input 
+            type="number" 
+            placeholder="Price (Nrs)" 
+            value={price} 
+            onChange={(e) => setPrice(e.target.value)} 
+            required 
+            style={{ ...inputStyle, flex: 2 }}
+          />
+          
+          <select value={type} onChange={(e) => setType(e.target.value)} required style={{ ...inputStyle, flex: 1 }}>
+            <option value="" disabled>Select Type</option>
+            <option value="home">House</option>
+            <option value="land">Land</option>
+            <option value="forsale">For Sale</option>
+          </select>
+        </div>
+
+        {/* --- AREA, BEDS, & PARKING ROW --- */}
+        <div style={{ display: "flex", gap: "10px" }}>
+          <input 
+            type="text" 
+            placeholder="Area (0-4-0-0)" 
+            value={area} 
+            onChange={(e) => setArea(e.target.value)} 
+            style={{ ...inputStyle, flex: 1 }}
+          />
+          <input 
+            type="number" 
+            placeholder="Beds" 
+            value={beds} 
+            onChange={(e) => setBeds(e.target.value)} 
+            style={{ ...inputStyle, flex: 1 }}
+          />
+          {/* --- NEW PARKING INPUT --- */}
+          <input 
+            type="number" 
+            placeholder="Parking" 
+            value={parking} 
+            onChange={(e) => setParking(e.target.value)} 
+            style={{ ...inputStyle, flex: 1 }}
+          />
+        </div>
 
         <textarea 
           placeholder="Description" 
@@ -120,7 +168,6 @@ const AddProperty = () => {
           />
         </div>
         
-        {/* Preview Section */}
         {previews.length > 0 && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: "10px", marginTop: "10px" }}>
             {previews.map((src, index) => (
@@ -134,20 +181,7 @@ const AddProperty = () => {
           </div>
         )}
 
-        <button 
-          type="submit" 
-          style={{ 
-            padding: "15px", 
-            backgroundColor: "#28a745", 
-            color: "#fff", 
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer", 
-            marginTop: "10px",
-            fontSize: "16px",
-            fontWeight: "bold"
-          }}
-        >
+        <button type="submit" style={submitBtnStyle}>
           Publish Property
         </button>
       </form>
@@ -160,7 +194,21 @@ const inputStyle = {
   borderRadius: "5px",
   border: "1px solid #ddd",
   fontSize: "16px",
-  outline: "none"
+  outline: "none",
+  width: "100%",
+  boxSizing: "border-box"
+};
+
+const submitBtnStyle = {
+  padding: "15px", 
+  backgroundColor: "#28a745", 
+  color: "#fff", 
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer", 
+  marginTop: "10px",
+  fontSize: "16px",
+  fontWeight: "bold"
 };
 
 export default AddProperty;

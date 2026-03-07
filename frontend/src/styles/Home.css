@@ -1,7 +1,14 @@
 
-.homepage {
-    text-align: center;
-    padding: 20px;
+  .homepage {
+      text-align: center;
+      padding: 20px;
+  }
+
+  .home {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   }
   
   .featured-listings {
@@ -342,7 +349,48 @@ h2 {
   background: black;
 }
 
+/* Home.css or wherever you display the list */
+.property-grid {
+  display: flex; /* Switched from Grid to Flex to match your old project */
+  flex-wrap: wrap; 
+  justify-content: center; /* Centers cards if there are fewer than 3 */
+  gap: 25px;
+  width: 100%;
+  max-width: 1200px; /* From your old .listing-grid */
+  margin: 30px auto;
+  padding: 0 20px;
+}
 
+.property-grid > * {
+  flex: 0 1 calc(33.333% - 25px); 
+  min-width: 300px; /* Prevents them from getting skinnier than 300px */
+}
+/* Header styling to make sure it doesn't interfere */
+.home h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
 
+/* Search bar styling to keep it horizontal too */
+.search-filter {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
 
-  
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .property-grid {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .property-grid {
+    grid-template-columns: 1fr;
+    width: 90%;
+  }
+}

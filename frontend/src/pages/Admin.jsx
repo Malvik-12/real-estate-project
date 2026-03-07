@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import InquiryList from "./InquiryList"; // Ensure this is imported
+import InquiryList from "./InquiryList";
 
 const Admin = () => {
   const [properties, setProperties] = useState([]);
-  const [activeTab, setActiveTab] = useState("properties"); // 'properties' or 'inquiries'
+  const [activeTab, setActiveTab] = useState("properties");
 
   useEffect(() => {
     fetch("http://localhost:5001/api/properties")
@@ -14,7 +14,6 @@ const Admin = () => {
       .catch(() => toast.error("Failed to load properties"));
   }, []);
 
-  // --- Helper Functions ---
   const getFirstImage = (image_url) => {
     try {
       const images = typeof image_url === "string" ? JSON.parse(image_url) : image_url;
@@ -45,7 +44,7 @@ const Admin = () => {
   };
 
   return (
-    <div style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto" }}>
+    <div style={{ padding: "40px", maxWidth: "1300px", margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
         <h1>Admin Dashboard</h1>
         <Link to="/admin/add" style={addBtnStyle}>
@@ -53,7 +52,6 @@ const Admin = () => {
         </Link>
       </div>
 
-      {/* --- TAB BUTTONS --- */}
       <div style={{ display: "flex", gap: "20px", marginBottom: "30px", borderBottom: "2px solid #eee" }}>
         <button 
           onClick={() => setActiveTab("properties")}
@@ -69,15 +67,17 @@ const Admin = () => {
         </button>
       </div>
 
-      {/* --- CONDITIONAL CONTENT --- */}
-      {activeTab === "properties" ? (
+{activeTab === "properties" ? (
         <div style={{ overflowX: "auto" }}>
           <table width="100%" style={{ borderCollapse: "collapse", textAlign: "left" }}>
             <thead>
               <tr style={{ background: "#f8f9fa", borderBottom: "2px solid #dee2e6" }}>
                 <th style={cellStyle}>Image</th>
-                <th style={cellStyle}>Title</th>
+                <th style={cellStyle}>Title & Location</th>
                 <th style={cellStyle}>Price</th>
+                <th style={cellStyle}>Area</th>
+                <th style={cellStyle}>Beds</th>
+                <th style={cellStyle}>Parking</th> {/* NEW HEADER */}
                 <th style={cellStyle}>Type</th>
                 <th style={cellStyle}>Actions</th>
               </tr>
@@ -99,8 +99,14 @@ const Admin = () => {
                         />
                         {totalImages > 1 && <span style={badgeStyle}>+{totalImages - 1}</span>}
                       </td>
-                      <td style={cellStyle}><strong>{p.title}</strong></td>
+                      <td style={cellStyle}>
+                        <div><strong>{p.title}</strong></div>
+                        <div style={{ fontSize: "12px", color: "#666" }}>📍 {p.location || "N/A"}</div>
+                      </td>
                       <td style={cellStyle}>Nrs. {Number(p.price).toLocaleString('en-IN')}</td>
+                      <td style={cellStyle}>{p.area || "0-0-0-0"}</td>
+                      <td style={cellStyle}>{p.beds || "0"}</td>
+                      <td style={cellStyle}>🚗 {p.parking || "None"}</td> {/* NEW PARKING CELL */}
                       <td style={{ ...cellStyle, textTransform: "capitalize" }}>{p.type}</td>
                       <td style={cellStyle}>
                         <button onClick={() => handleDelete(p.id)} style={deleteBtnStyle}>Delete</button>
@@ -109,7 +115,11 @@ const Admin = () => {
                   );
                 })
               ) : (
-                <tr><td colSpan="5" style={{ textAlign: "center", padding: "40px" }}>No properties listed.</td></tr>
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center", padding: "40px" }}> {/* ColSpan increased to 8 */}
+                    No properties listed.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
@@ -121,29 +131,12 @@ const Admin = () => {
   );
 };
 
-// --- STYLES ---
+// ... Styles remain the same ...
 const cellStyle = { padding: "12px" };
 const addBtnStyle = { padding: "10px 20px", background: "#28a745", color: "#fff", textDecoration: "none", borderRadius: "6px", fontWeight: "bold" };
 const deleteBtnStyle = { color: "#dc3545", border: "none", cursor: "pointer", background: "none", fontWeight: "bold" };
 const badgeStyle = { position: "absolute", bottom: "15px", right: "15px", backgroundColor: "rgba(0,0,0,0.8)", color: "#fff", fontSize: "10px", padding: "2px 4px", borderRadius: "3px" };
-
-const activeTabBtn = {
-  padding: "12px 20px",
-  border: "none",
-  background: "none",
-  borderBottom: "4px solid #000",
-  fontWeight: "bold",
-  cursor: "pointer",
-  fontSize: "16px"
-};
-
-const inactiveTabBtn = {
-  padding: "12px 20px",
-  border: "none",
-  background: "none",
-  color: "#888",
-  cursor: "pointer",
-  fontSize: "16px"
-};
+const activeTabBtn = { padding: "12px 20px", border: "none", background: "none", borderBottom: "4px solid #000", fontWeight: "bold", cursor: "pointer", fontSize: "16px" };
+const inactiveTabBtn = { padding: "12px 20px", border: "none", background: "none", color: "#888", cursor: "pointer", fontSize: "16px" };
 
 export default Admin;
