@@ -135,3 +135,20 @@
   color: #444;
   font-weight: 500;
 }
+
+.property-card-link {
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.property-card-link:hover {
+  transform: translateY(-5px);
+}
+
+.view-details-tag {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #007bff;
+  font-weight: bold;
+  text-align: right;
+}
