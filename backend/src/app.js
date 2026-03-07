@@ -1,7 +1,7 @@
-import express from "express";
 import cors from "cors";
+import express from "express";
+import inquiryRoutes from "./routes/inquiryRoutes.js";
 import propertyRoutes from "./routes/propertyRoutes.js";
-import inquiryRoutes from "./routes/inquiryRoutes.js"; 
 
 const app = express();
 
