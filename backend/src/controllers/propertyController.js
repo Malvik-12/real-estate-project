@@ -4,16 +4,25 @@ import path from "path";
 
 // CREATE: Add a new property with MULTIPLE Image Uploads
 export const addProperty = (req, res) => {
-  const { title, description, price, type } = req.body;
+  // 1. Added 'parking' to destructuring
+  const { title, description, price, type, location, area, beds, parking } = req.body;
   
-  // Multer puts multiple files in req.files
-  // We map them to an array of strings: ["/uploads/1.jpg", "/uploads/2.jpg"]
   const image_urls = req.files ? req.files.map(file => `/uploads/${file.filename}`) : [];
 
-  const sql = "INSERT INTO properties (title, description, price, image_url, type) VALUES (?, ?, ?, ?, ?)";
+  // 2. UPDATED: Added 'parking' column and a 9th '?' placeholder
+  const sql = "INSERT INTO properties (title, description, price, image_url, type, location, area, beds, parking) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
   
-  // IMPORTANT: We must stringify the array so MySQL accepts it into the JSON column
-  db.query(sql, [title, description, price, JSON.stringify(image_urls), type], (err, result) => {
+  db.query(sql, [
+    title, 
+    description, 
+    price, 
+    JSON.stringify(image_urls), 
+    type, 
+    location, 
+    area || "0-0-0-0", 
+    beds || 0,
+    parking || "No Parking" // 3. Added parking value
+  ], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     res.status(201).json({ message: "Property created", id: result.insertId, image_urls });
   });
@@ -40,17 +49,29 @@ export const getPropertyById = (req, res) => {
 // UPDATE: Update property and optionally add NEW images
 export const updateProperty = (req, res) => {
   const { id } = req.params;
-  const { title, description, price, type } = req.body;
+  // 4. Added 'parking' to destructuring
+  const { title, description, price, type, location, area, beds, parking } = req.body;
   
-  // Logic: If new files are uploaded, use them. Otherwise, use existing images from body.
   let image_url = req.body.image_url; 
   if (req.files && req.files.length > 0) {
     image_url = JSON.stringify(req.files.map(file => `/uploads/${file.filename}`));
   }
 
-  const sql = "UPDATE properties SET title=?, description=?, price=?, image_url=?, type=? WHERE id=?";
+  // 5. UPDATED: Added 'parking=?' to the UPDATE statement and adjusted parameters
+  const sql = "UPDATE properties SET title=?, description=?, price=?, image_url=?, type=?, location=?, area=?, beds=?, parking=? WHERE id=?";
   
-  db.query(sql, [title, description, price, image_url, type, id], (err, result) => {
+  db.query(sql, [
+    title, 
+    description, 
+    price, 
+    image_url, 
+    type, 
+    location, 
+    area, 
+    beds, 
+    parking, // 6. Added parking to the array
+    id
+  ], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.affectedRows === 0) return res.status(404).json({ message: "Property not found" });
     res.json({ message: "Property updated successfully" });
@@ -61,24 +82,31 @@ export const updateProperty = (req, res) => {
 export const deleteProperty = (req, res) => {
   const { id } = req.params;
 
-  // 1. Get the JSON array of images before deleting the DB record
   db.query("SELECT image_url FROM properties WHERE id = ?", [id], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.length === 0) return res.status(404).json({ message: "Property not found" });
 
-    const imageUrls = result[0].image_url; // This will be an array since it's a JSON column
+    let imageUrls = result[0].image_url;
+    
+    try {
+      if (typeof imageUrls === 'string') {
+        imageUrls = JSON.parse(imageUrls);
+      }
+    } catch (e) {
+      imageUrls = [];
+    }
 
-    // 2. Delete from Database
     db.query("DELETE FROM properties WHERE id = ?", [id], (err) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      // 3. Delete every file in the array from the public/uploads folder
       if (Array.isArray(imageUrls)) {
         imageUrls.forEach((url) => {
           const filePath = path.join(process.cwd(), "public", url);
-          fs.unlink(filePath, (unlinkErr) => {
-            if (unlinkErr) console.error("Could not delete file:", url);
-          });
+          if (fs.existsSync(filePath)) {
+            fs.unlink(filePath, (unlinkErr) => {
+              if (unlinkErr) console.error("Could not delete file:", url);
+            });
+          }
         });
       }
       res.json({ message: "Property and all associated images deleted" });
