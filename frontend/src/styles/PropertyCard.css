@@ -1,64 +1,137 @@
+/* Container - Added hover lift effect */
 .property-card {
-  background: #fff;
-  border-bottom: 3px solid #00338d;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* This keeps the ribbon from leaking out */
-  transition: transform 0.3s ease;
+  background: #ffffff;
+  border-bottom: 4px solid #00338d; /* Slightly thicker for brand presence */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden; 
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
   width: 100%;
   max-width: 380px;
-  position: relative; /* Context for absolute children */
-  margin-bottom: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px; /* Softens the look */
 }
 
+.property-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Image Section */
 .image-container {
   position: relative;
   height: 230px;
   width: 100%;
-  background-color: #f0f0f0; /* Fallback color if image fails */
+  background-color: #f8f9fa;
+  overflow: hidden; /* Clips the ribbon and image zooms */
 }
 
-/* Updated Ribbon - Better positioning */
+.property-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.property-card:hover .property-image {
+  transform: scale(1.05); /* Subtle zoom on hover */
+}
+
+/* Ribbon - Using translate for safer positioning */
 .ribbon {
   position: absolute;
-  top: 15px;
-  right: -35px;
+  top: 18px;
+  right: -32px;
   background: #e62e43;
   color: white;
-  padding: 5px 40px;
+  padding: 5px 35px;
   transform: rotate(45deg);
   font-size: 11px;
-  font-weight: bold;
-  z-index: 5;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* Darker Gradient for Visibility */
+/* Gradient Overlay - Improved legibility */
 .image-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 50px 15px 15px; /* More padding at top for smoother fade */
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
-  color: white;
-  z-index: 2;
-}
-
-.property-title {
-  margin: 0;
-  font-size: 16px;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: #ffffff !important;
+  padding: 40px 15px 15px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+  z-index: 5;
 }
 
 .property-location {
-  margin: 5px 0 0;
+  margin: 0;
   font-size: 13px;
-  color: #ffffff; /* Explicitly white */
-  opacity: 1;
+  color: #ffffff;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
+/* Card Body */
 .property-body {
-  padding: 15px;
-  background: white; /* Ensures it covers anything behind it */
+  padding: 16px;
+  flex-grow: 1;
+}
+
+.property-date {
+  font-size: 11px;
+  color: #6c757d;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.property-title {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+  line-height: 1.3;
+  /* Limit to 2 lines for consistency */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Price Section */
+.property-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.property-price {
+  font-size: 20px;
+  font-weight: 800;
+  color: #00338d;
+}
+
+.price-suffix {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Footer Stats */
+.property-footer {
+  display: flex;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+  gap: 20px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #444;
+  font-weight: 500;
 }
