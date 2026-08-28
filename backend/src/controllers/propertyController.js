@@ -1,6 +1,6 @@
-import { db } from "../db/connection.js";
 import fs from "fs";
 import path from "path";
+import { db } from "../db/connection.js";
 
 // CREATE: Add a new property with MULTIPLE Image Uploads
 export const addProperty = (req, res) => {

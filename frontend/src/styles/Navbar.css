@@ -1,0 +1,176 @@
+/* ===== Navbar ===== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 64px;
+  background: linear-gradient(90deg, #0b3d91 0%, #1565c0 100%);
+  box-shadow: 0 2px 12px rgba(11, 61, 145, 0.35);
+}
+
+/* --- Brand --- */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.navbar-logo {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.navbar-company {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* --- Desktop Links --- */
+.navbar-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-link {
+  display: inline-block;
+  padding: 8px 14px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+
+.navbar-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.navbar-link.active {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  font-weight: 700;
+  position: relative;
+}
+
+.navbar-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 14px;
+  right: 14px;
+  height: 3px;
+  background: #ffcc00;
+  border-radius: 2px;
+}
+
+/* --- Hamburger --- */
+.navbar-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 26px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.navbar-hamburger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform 0.25s, opacity 0.25s;
+}
+
+/* Animate to X when open */
+.navbar-hamburger.open span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+.navbar-hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.navbar-hamburger.open span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* --- Mobile drawer --- */
+.navbar-mobile-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 64px;
+  left: 0;
+  width: 100%;
+  background: #0b3d91;
+  padding: 12px 0;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  transform: translateY(-10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.navbar-mobile-menu.open {
+  display: flex;
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.mobile-link {
+  padding: 14px 32px;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.mobile-link:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.mobile-link.active {
+  color: #fff;
+  font-weight: 700;
+  border-left-color: #ffcc00;
+  background: rgba(255,255,255,0.12);
+}
+
+/* --- Responsive breakpoints --- */
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none;
+  }
+
+  .navbar-hamburger {
+    display: flex;
+  }
+
+  .navbar {
+    position: relative; /* So mobile drawer positions relative to it */
+  }
+}

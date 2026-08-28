@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../utils/api";
 
 const InquiryList = () => {
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/inquiries")
+    fetch(`${API_BASE_URL}/api/inquiries`)
       .then((res) => res.json())
       .then((data) => {
         setInquiries(data);

@@ -1,6 +1,16 @@
+// Central API configuration
+// All fetch calls should import API_BASE_URL from here instead of hardcoding localhost.
+// To change the backend URL, update VITE_API_URL in the frontend .env file.
+
+export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
+
+// Legacy helper kept for backward compatibility
 export const fetchProperties = async (type) => {
   try {
-    const response = await fetch(`http://localhost:5001/api/properties?type=${type}`);
+    const url = type
+      ? `${API_BASE_URL}/api/properties?type=${type}`
+      : `${API_BASE_URL}/api/properties`;
+    const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch properties");
     const data = await response.json();
     return data;

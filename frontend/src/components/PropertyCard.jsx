@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import "../styles/PropertyCard.css";
+import { API_BASE_URL } from "../utils/api";
+
+const TYPE_CONFIG = {
+  home:    { label: "House",    color: "#0b3d91" },
+  land:    { label: "Land",     color: "#7c3aed" },
+  forsale: { label: "For Sale", color: "#dc2626" },
+};
 
 const PropertyCard = ({ property }) => {
-  const API_BASE_URL = "http://localhost:5001";
 
   const {
     id,
@@ -12,9 +18,10 @@ const PropertyCard = ({ property }) => {
     location = "Location not specified",
     image_url,
     created_at,
+    type = "home",
     area = "0-0-0-0",
     beds = "0",
-    parking = 0, // 1. Added parking to destructuring with a default of 0
+    parking = 0,
     isEntire
   } = property;
 
@@ -34,13 +41,18 @@ const PropertyCard = ({ property }) => {
 
   const formattedPrice = price ? Number(price).toLocaleString('en-IN') : "N/A";
   const formattedDate = created_at ? new Date(created_at).toLocaleDateString() : "Recently";
-  
+  const typeInfo = TYPE_CONFIG[type] || TYPE_CONFIG.home;
 
   return (
     <Link to={`/property/${id}`} className="property-card-link">
       <div className="property-card">
         <div className="image-container">
-          <div className="ribbon">For Sale</div>
+          <div
+            className="ribbon"
+            style={{ background: typeInfo.color }}
+          >
+            {typeInfo.label}
+          </div>
       
           <img
             src={finalImageUrl}

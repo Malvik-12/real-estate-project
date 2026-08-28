@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../utils/api";
 
 const AddProperty = () => {
   const [title, setTitle] = useState("");
@@ -63,7 +64,7 @@ const AddProperty = () => {
     });
 
     try {
-      const response = await fetch("http://localhost:5001/api/properties", {
+      const response = await fetch(`${API_BASE_URL}/api/properties`, {
         method: "POST",
         body: formData,
       });

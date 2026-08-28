@@ -1,51 +1,65 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../utils/api";
+import "../styles/Properties.css";
+
+// Helper: convert number to Nepali words (simplified)
+const toNepaliWords = (num) => {
+  const n = Number(num);
+  if (!n) return "";
+  if (n >= 10000000) return `${(n / 10000000).toFixed(2)} Crore`;
+  if (n >= 100000) return `${(n / 100000).toFixed(2)} Lakh`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)} Thousand`;
+  return `${n}`;
+};
 
 const Properties = () => {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
   const [images, setImages] = useState([]);
+  const [activeImg, setActiveImg] = useState(0);
+  const [allProperties, setAllProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  // State for Inquiry Form and Success View
+  const [activeTab, setActiveTab] = useState("features");
+  const [selectedTime, setSelectedTime] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: ""
+    name: "", email: "", phone: "", message: ""
   });
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/properties/${id}`)
+    fetch(`${API_BASE_URL}/api/properties/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setProperty(data);
-        // Safely parse images array from JSON string
-        const parsedImages = typeof data.image_url === "string" 
-          ? JSON.parse(data.image_url) 
+        const parsed = typeof data.image_url === "string"
+          ? JSON.parse(data.image_url)
           : data.image_url;
-        setImages(parsedImages || []);
+        setImages(parsed || []);
+        setActiveImg(0);
         setLoading(false);
       })
       .catch(() => {
         toast.error("Failed to load property details");
         setLoading(false);
       });
+
+    fetch(`${API_BASE_URL}/api/properties`)
+      .then((res) => res.json())
+      .then((data) => setAllProperties(data))
+      .catch(() => {});
   }, [id]);
 
   const handleInquirySubmit = async (e) => {
     e.preventDefault();
     const loadingToast = toast.loading("Sending your inquiry...");
-
     try {
-      const res = await fetch("http://localhost:5001/api/inquiries", {
+      const res = await fetch(`${API_BASE_URL}/api/inquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, property_id: id }),
       });
-
       if (res.ok) {
         toast.success("Inquiry sent successfully!", { id: loadingToast });
         setIsSubmitted(true);
@@ -57,117 +71,313 @@ const Properties = () => {
     }
   };
 
-  if (loading) return <div style={centerStyle}>Loading Property Details...</div>;
-  if (!property) return <div style={centerStyle}>Property not found.</div>;
+  const getThumb = (p) => {
+    try {
+      const imgs = typeof p.image_url === "string" ? JSON.parse(p.image_url) : p.image_url;
+      return imgs && imgs.length > 0 ? `${API_BASE_URL}${imgs[0]}` : null;
+    } catch { return null; }
+  };
+
+  if (loading) return (
+    <div className="page-loading">
+      <span style={{ fontSize: 40 }}>🏠</span>
+      Loading property details…
+    </div>
+  );
+  if (!property) return (
+    <div className="page-loading">
+      <span style={{ fontSize: 40 }}>😕</span>
+      Property not found.
+    </div>
+  );
+
+  const typeLabelMap = { home: "House", land: "Land", forsale: "For Sale" };
+
+  // Split properties into 3 sidebar groups
+  const others = allProperties.filter(p => String(p.id) !== String(id));
+  const topListings      = others.slice(0, 3);
+  const premiumListings  = others.slice(3, 6);
+  const featuredListings = others.slice(0, 4);
+
+  const mainImgSrc = images.length > 0
+    ? `${API_BASE_URL}${images[activeImg]}`
+    : "https://placehold.co/800x420?text=No+Image";
+
+  const timeslots = ["10:00 AM", "11:30 AM", "2:00 PM", "3:30 PM", "5:00 PM"];
+
+  // Features to display
+  const features = [
+    { icon: "🏠", label: "Type",     value: typeLabelMap[property.type] || property.type },
+    { icon: "📐", label: "Area",     value: property.area || "N/A" },
+    { icon: "🛏️", label: "Bedroom", value: `${property.beds || 0} Bed` },
+    { icon: "🚗", label: "Parking",  value: `${property.parking || 0} Car${property.parking !== 1 ? "s" : ""}` },
+    { icon: "📅", label: "Listed",   value: property.created_at ? new Date(property.created_at).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" }) : "—" },
+    { icon: "📍", label: "Location", value: property.location || "Nepal" },
+  ];
+
+  const SidebarSection = ({ title, icon, items, viewAllLink }) => (
+    <div className="sidebar-box">
+      <div className="sidebar-box-header">{icon} {title}</div>
+      <ul className="sidebar-listings-list">
+        {items.length === 0 ? (
+          <li style={{ padding: "14px 12px", color: "var(--text-muted)", fontSize: 13 }}>
+            No listings available.
+          </li>
+        ) : items.map((p) => {
+          const thumb = getThumb(p);
+          return (
+            <li key={p.id} className="sidebar-listing-item">
+              <Link to={`/property/${p.id}`} className="sidebar-listing-link">
+                {thumb
+                  ? <img src={thumb} className="sidebar-listing-img" alt={p.title} onError={(e) => e.target.src="https://placehold.co/64x52?text=N/A"} />
+                  : <div className="sidebar-listing-placeholder">🏠</div>
+                }
+                <div className="sidebar-listing-info">
+                  <p className="sidebar-listing-title">{p.title}</p>
+                  <p className="sidebar-listing-location">📍 {p.location || "Nepal"}</p>
+                  <p className="sidebar-listing-price">Nrs. {Number(p.price).toLocaleString("en-IN")}</p>
+                </div>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      <Link to={viewAllLink} className="sidebar-view-all">+ View All</Link>
+    </div>
+  );
 
   return (
-    <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px" }}>
-      <Link to="/listings" style={{ color: "#666", textDecoration: "none", marginBottom: "20px", display: "inline-block" }}>
-        ← Back to Listings
-      </Link>
+    <div className="property-detail-outer">
+      {/* Breadcrumb */}
+      <nav className="breadcrumb">
+        <Link to="/">Home</Link>
+        <span className="breadcrumb-sep">/</span>
+        <Link to="/listings">Top Listing</Link>
+        <span className="breadcrumb-sep">/</span>
+        <span>{property.title}</span>
+      </nav>
 
-      {/* --- Section 1: Image Gallery (Uses the 'images' variable) --- */}
-      <div style={galleryGrid}>
-        <div style={{ position: "relative" }}>
-          <img 
-            src={`http://localhost:5001${images[0]}`} 
-            style={mainImgStyle} 
-            alt="Main view" 
-            onError={(e) => e.target.src = "https://via.placeholder.com/800x410?text=No+Image"}
-          />
-        </div>
+      <div className="property-detail-layout">
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {images.slice(1, 3).map((img, i) => (
-            <img 
-              key={i} 
-              src={`http://localhost:5001${img}`} 
-              style={sideImgStyle} 
-              alt={`View ${i + 1}`} 
-              onError={(e) => e.target.src = "https://via.placeholder.com/400x200?text=View+Not+Available"}
+        {/* ===== LEFT: Main Content ===== */}
+        <div className="property-detail-main">
+
+          {/* Gallery */}
+          <div className="gallery-wrapper">
+            <img
+              src={mainImgSrc}
+              className="gallery-main-img"
+              alt={property.title}
+              onError={(e) => e.target.src = "https://placehold.co/800x420?text=No+Image"}
             />
-          ))}
-          {images.length > 3 && (
-            <div style={morePhotosBadge}>+{images.length - 3} more photos</div>
+            {images.length > 1 && (
+              <div className="gallery-count-badge">
+                📷 {activeImg + 1} / {images.length}
+              </div>
+            )}
+          </div>
+
+          {images.length > 1 && (
+            <div className="gallery-thumbs">
+              {images.map((img, i) => (
+                <img
+                  key={i}
+                  src={`${API_BASE_URL}${img}`}
+                  className={`gallery-thumb ${i === activeImg ? "active" : ""}`}
+                  alt={`Photo ${i + 1}`}
+                  onClick={() => setActiveImg(i)}
+                  onError={(e) => e.target.style.display = "none"}
+                />
+              ))}
+            </div>
           )}
-        </div>
-      </div>
 
-      {/* --- Section 2: Property Info --- */}
-      <div style={{ marginBottom: "50px" }}>
-        <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>{property.title}</h1>
-        <p style={{ color: "#666", fontSize: "18px", marginBottom: "10px" }}>📍 {property.location || "Location not specified"}</p>
-        <h2 style={{ color: "#28a745", marginBottom: "20px" }}>Nrs. {Number(property.price).toLocaleString('en-IN')}</h2>
-        
-        <div style={statsRow}>
-          <div style={statBox}>📐 Area: {property.area || "N/A"}</div>
-          <div style={statBox}>🛏️ Beds: {property.beds || "0"}</div>
-          <div style={statBox}>🏠 Type: {property.type}</div>
-        </div>
+          {/* Price + Meta Bar */}
+          <div className="listing-meta-bar">
+            <div className="listing-price-block">
+              <div className="listing-price-row">
+                <div className="property-detail-price">
+                  Nrs. {Number(property.price).toLocaleString("en-IN")}
+                </div>
+                <span className="negotiable-badge">Negotiable</span>
+              </div>
+              <div className="price-in-words">
+                {toNepaliWords(property.price)} only
+              </div>
+            </div>
 
-        <p style={{ lineHeight: "1.8", color: "#444", fontSize: "17px", marginTop: "20px" }}>
-          {property.description}
-        </p>
-      </div>
+            <div className="listing-right-meta">
+              <div className="posted-by">
+                Posted By — Bahumukhi Investment
+              </div>
+              <div className="nres-code">Code NRES-{property.id}</div>
+              <div className="phone-numbers">
+                <a href="tel:+9779851220315" className="phone-link">
+                  📞 9851220315
+                </a>
+              </div>
+            </div>
+          </div>
 
-      <hr style={{ border: "0", borderTop: "1px solid #eee", margin: "40px 0" }} />
+          {/* Title / Badge / Location */}
+          <div className="property-meta-row">
+            <span className="property-type-badge">
+              {typeLabelMap[property.type] || property.type}
+            </span>
+          </div>
+          <h1 className="property-detail-title">{property.title}</h1>
+          <p className="property-detail-location">📍 {property.location || "Location not specified"}</p>
 
-      {/* --- Section 3: Conditional Inquiry Form/Success Message --- */}
-      <div style={formWrapper}>
-        {isSubmitted ? (
-          <div style={successMessageStyle}>
-            <div style={{ fontSize: "60px", marginBottom: "10px" }}>✅</div>
-            <h2 style={{ color: "#28a745" }}>Inquiry Completed!</h2>
-            <p style={{ fontSize: "18px", color: "#555" }}>
-              Thank you, <strong>{formData.name}</strong>. We have received your interest in <strong>{property.title}</strong> and will contact you shortly.
-            </p>
-            <button onClick={() => setIsSubmitted(false)} style={resetLink}>
-              Have another question? Send another message.
+          {/* Tabs */}
+          <div className="property-tabs">
+            <button
+              className={`property-tab ${activeTab === "features" ? "active" : ""}`}
+              onClick={() => setActiveTab("features")}
+            >
+              📋 Features
+            </button>
+            <button
+              className={`property-tab ${activeTab === "schedule" ? "active" : ""}`}
+              onClick={() => setActiveTab("schedule")}
+            >
+              📅 Schedule Showing
+            </button>
+            <button
+              className={`property-tab ${activeTab === "inquiry" ? "active" : ""}`}
+              onClick={() => setActiveTab("inquiry")}
+            >
+              ✉️ Request Info
             </button>
           </div>
-        ) : (
-          <>
-            <h3 style={{ marginBottom: "25px", fontSize: "22px" }}>Interested in this property?</h3>
-            <form onSubmit={handleInquirySubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-              <div style={{ display: "flex", gap: "15px" }}>
-                <input 
-                  style={inputStyle} type="text" placeholder="Full Name" required 
-                  value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} 
-                />
-                <input 
-                  style={inputStyle} type="email" placeholder="Email Address" required 
-                  value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} 
-                />
+
+          {/* Tab: Features */}
+          {activeTab === "features" && (
+            <div>
+              <div className="features-grid">
+                {features.map((f, i) => (
+                  <div key={i} className="feature-card">
+                    <span className="feature-icon">{f.icon}</span>
+                    <span className="feature-value">{f.value}</span>
+                    <span className="feature-label">{f.label}</span>
+                  </div>
+                ))}
               </div>
-              <input 
-                style={inputStyle} type="text" placeholder="Phone Number" 
-                value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} 
-              />
-              <textarea 
-                style={inputStyle} rows="4" placeholder="I am interested in this property and would like more information..." 
-                value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} 
-              />
-              <button type="submit" style={submitBtn}>Submit Inquiry</button>
-            </form>
-          </>
-        )}
+
+              {property.description && (
+                <>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 10, color: "var(--text-primary)" }}>
+                    Property Detail
+                  </h3>
+                  <p className="property-detail-description">{property.description}</p>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Tab: Schedule Showing */}
+          {activeTab === "schedule" && (
+            <div className="schedule-card">
+              <h3>📅 Schedule a Showing</h3>
+              <p>
+                Select a preferred time and we'll arrange a property visit for you. Our agent will confirm your appointment within 24 hours.
+              </p>
+              <div className="schedule-times">
+                {timeslots.map((t) => (
+                  <button
+                    key={t}
+                    className={`time-slot ${selectedTime === t ? "active" : ""}`}
+                    onClick={() => setSelectedTime(t)}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+              {selectedTime && (
+                <p style={{ color: "var(--success)", fontWeight: 600, fontSize: 14 }}>
+                  ✅ You selected {selectedTime}. Please call <a href="tel:+9779851220315" style={{ color: "var(--primary)" }}>9851220315</a> to confirm.
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Tab: Request Info / Inquiry Form */}
+          {activeTab === "inquiry" && (
+            <div className="inquiry-section">
+              {isSubmitted ? (
+                <div className="inquiry-success">
+                  <div className="inquiry-success-icon">✅</div>
+                  <h3>Inquiry Received!</h3>
+                  <p>
+                    Thank you, <strong>{formData.name}</strong>. We've received your interest in{" "}
+                    <strong>{property.title}</strong> and will contact you shortly.
+                  </p>
+                  <button onClick={() => setIsSubmitted(false)} className="reset-inquiry-btn">
+                    Send another message
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <h3>📩 Request Information</h3>
+                  <form onSubmit={handleInquirySubmit} className="inquiry-form">
+                    <div className="form-row">
+                      <input className="form-input" type="text" placeholder="Full Name" required
+                        value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                      <input className="form-input" type="email" placeholder="Email Address" required
+                        value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                    </div>
+                    <input className="form-input" type="text" placeholder="Phone Number"
+                      value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+                    <textarea className="form-input form-textarea"
+                      placeholder="I am interested in this property and would like more information…"
+                      value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} />
+                    <button type="submit" className="submit-btn">Submit Inquiry →</button>
+                  </form>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* ===== RIGHT: Sidebar ===== */}
+        <aside className="property-detail-sidebar">
+
+          <SidebarSection
+            title="Top Listings"
+            icon="🏆"
+            items={topListings}
+            viewAllLink="/listings"
+          />
+
+          <SidebarSection
+            title="Premium Listings"
+            icon="⭐"
+            items={premiumListings.length > 0 ? premiumListings : topListings.slice(0, 2)}
+            viewAllLink="/forsale"
+          />
+
+          <SidebarSection
+            title="Featured Listings"
+            icon="🔥"
+            items={featuredListings}
+            viewAllLink="/listings"
+          />
+
+          {/* Contact Box */}
+          <div className="sidebar-box">
+            <div className="sidebar-box-header">📞 Contact Agent</div>
+            <div className="sidebar-contact">
+              <h4>Bahumukhi Investment Co.</h4>
+              <p>📍 Imadol, Lalitpur, Nepal</p>
+              <p>✉️ <a href="mailto:info@bahumukhi.com">info@bahumukhi.com</a></p>
+              <p>📞 <a href="tel:+9779851220315">+977 9851220315</a></p>
+              <a href="tel:+9779851220315" className="sidebar-call-btn">📞 Call Now</a>
+            </div>
+          </div>
+
+        </aside>
       </div>
     </div>
   );
 };
-
-// --- STYLES ---
-const centerStyle = { textAlign: "center", padding: "100px", fontSize: "20px", color: "#666" };
-const galleryGrid = { display: "grid", gridTemplateColumns: "2fr 1fr", gap: "10px", marginBottom: "30px" };
-const mainImgStyle = { width: "100%", height: "410px", objectFit: "cover", borderRadius: "12px", border: "1px solid #eee" };
-const sideImgStyle = { width: "100%", height: "200px", objectFit: "cover", borderRadius: "12px", border: "1px solid #eee" };
-const morePhotosBadge = { textAlign: "center", padding: "10px", backgroundColor: "#f0f0f0", borderRadius: "8px", fontSize: "14px", fontWeight: "bold", color: "#666" };
-const statsRow = { display: "flex", gap: "15px", flexWrap: "wrap", margin: "20px 0" };
-const statBox = { padding: "10px 15px", backgroundColor: "#f8f9fa", borderRadius: "8px", border: "1px solid #eee", fontSize: "14px" };
-const formWrapper = { backgroundColor: "#fff", padding: "40px", borderRadius: "15px", border: "1px solid #eee", boxShadow: "0 4px 20px rgba(0,0,0,0.05)" };
-const inputStyle = { width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #ddd", fontSize: "16px", outline: "none" };
-const submitBtn = { padding: "15px", backgroundColor: "#000", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", fontSize: "16px" };
-const successMessageStyle = { textAlign: "center", padding: "20px" };
-const resetLink = { background: "none", border: "none", color: "#007bff", cursor: "pointer", textDecoration: "underline", marginTop: "20px", fontSize: "14px" };
 
 export default Properties;

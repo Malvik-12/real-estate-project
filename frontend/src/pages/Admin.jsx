@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import InquiryList from "./InquiryList";
+import { API_BASE_URL } from "../utils/api";
 
 const Admin = () => {
   const [properties, setProperties] = useState([]);
   const [activeTab, setActiveTab] = useState("properties");
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/properties")
+    fetch(`${API_BASE_URL}/api/properties`)
       .then((res) => res.json())
       .then((data) => setProperties(data))
       .catch(() => toast.error("Failed to load properties"));
@@ -30,7 +31,7 @@ const Admin = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this property?")) return;
-    const deletePromise = fetch(`http://localhost:5001/api/properties/${id}`, { 
+    const deletePromise = fetch(`${API_BASE_URL}/api/properties/${id}`, { 
       method: "DELETE" 
     }).then((res) => {
       if (!res.ok) throw new Error("Failed to delete");
@@ -91,7 +92,7 @@ const Admin = () => {
                     <tr key={p.id} style={{ borderBottom: "1px solid #eee" }}>
                       <td style={{ padding: "12px", position: "relative" }}>
                         <img 
-                          src={`http://localhost:5001${firstImage}`} 
+                          src={`${API_BASE_URL}${firstImage}`} 
                           width="60" height="60" 
                           style={{ objectFit: "cover", borderRadius: "6px", border: "1px solid #ddd" }} 
                           alt={p.title} 

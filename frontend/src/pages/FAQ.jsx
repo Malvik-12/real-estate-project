@@ -1,16 +1,7 @@
-// const FAQ = () => {
-//   return (
-//     <div>
-//       <h1>Welcome to Real Estate</h1>
-//       <p>Browse properties, lands, and more.</p>
-//     </div>
-//   );
-// };
-
-// export default FAQ;
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/FAQs.css";
+import { API_BASE_URL } from "../utils/api";
 
 const FAQs = () => {
   const [topListings, setTopListings] = useState([]);
@@ -21,7 +12,7 @@ const FAQs = () => {
     const fetchTopProperties = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch("http://localhost:5001/api/properties");
+        const res = await fetch(`${API_BASE_URL}/api/properties`);
         if (!res.ok) throw new Error("Failed to load listings");
         
         const data = await res.json();
@@ -37,6 +28,19 @@ const FAQs = () => {
 
     fetchTopProperties();
   }, []);
+
+  // Fix: parse the JSON array stored in image_url and get the first image
+  const getFirstImage = (image_url) => {
+    try {
+      const images = typeof image_url === "string" ? JSON.parse(image_url) : image_url;
+      if (Array.isArray(images) && images.length > 0) {
+        return `${API_BASE_URL}${images[0]}`;
+      }
+    } catch {
+      // ignore parse errors
+    }
+    return "https://via.placeholder.com/100?text=No+Image";
+  };
 
   return (
     <div className="faq-page-container">
@@ -88,9 +92,10 @@ const FAQs = () => {
             <li key={listing.id} className="top-listing-item">
               <Link to={`/property/${listing.id}`} className="top-listing-link">
                 <img 
-                  src={listing.image_url || "https://via.placeholder.com/100"} 
+                  src={getFirstImage(listing.image_url)}
                   alt={listing.title} 
                   className="top-listing-img" 
+                  onError={(e) => e.target.src = "https://via.placeholder.com/100?text=No+Image"}
                 />
                 <div className="top-listing-details">
                   <p className="top-listing-title">{listing.title}</p>

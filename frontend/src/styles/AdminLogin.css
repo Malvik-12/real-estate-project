@@ -1,0 +1,125 @@
+/* ===== Admin Login Page ===== */
+.admin-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0b3d91 0%, #1a237e 50%, #0d47a1 100%);
+  padding: 20px;
+}
+
+.admin-login-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 50px 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: fadeSlideUp 0.4s ease;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.admin-login-card.shake {
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-10px); }
+  40%       { transform: translateX(10px); }
+  60%       { transform: translateX(-8px); }
+  80%       { transform: translateX(8px); }
+}
+
+.admin-login-icon {
+  font-size: 50px;
+  margin-bottom: 16px;
+}
+
+.admin-login-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0b3d91;
+  margin-bottom: 8px;
+}
+
+.admin-login-subtitle {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 32px;
+}
+
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-input-wrapper {
+  position: relative;
+}
+
+.admin-login-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.admin-login-input:focus {
+  border-color: #0b3d91;
+}
+
+.admin-login-error {
+  color: #e53935;
+  font-size: 13px;
+  text-align: left;
+  padding-left: 4px;
+  margin: 0;
+}
+
+.admin-login-btn {
+  padding: 14px;
+  background: linear-gradient(135deg, #0b3d91, #1565c0);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  margin-top: 6px;
+}
+
+.admin-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(11, 61, 145, 0.35);
+}
+
+.admin-login-btn:active {
+  transform: translateY(0);
+}
+
+.admin-login-back {
+  margin-top: 24px;
+  font-size: 13px;
+}
+
+.admin-login-back a {
+  color: #888;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.admin-login-back a:hover {
+  color: #0b3d91;
+}

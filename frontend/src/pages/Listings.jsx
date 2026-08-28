@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import PropertyCard from "../components/PropertyCard";
-import "../styles/Listings.css";
+import "../styles/Home.css";
+import { API_BASE_URL } from "../utils/api";
 
 const Listings = () => {
   const [allProperties, setAllProperties] = useState([]);
@@ -9,7 +10,7 @@ const Listings = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/properties");
+        const res = await fetch(`${API_BASE_URL}/api/properties`);
         const data = await res.json();
         setAllProperties(data);
       } catch (err) {
@@ -21,29 +22,54 @@ const Listings = () => {
     fetchProperties();
   }, []);
 
-  // Filter ONLY houses for this page
   const houseProperties = useMemo(() => {
     return allProperties.filter(p => p.type === 'home');
   }, [allProperties]);
 
   return (
-    <div className="listings-page">
-      <div className="container">
-        <h1>House Listings</h1>
-        <p>Explore the best residential properties available.</p>
+    <div>
+      <section className="subpage-hero">
+        <h1>🏠 House Listings</h1>
+        <p>Explore premium residential properties available across Nepal</p>
+      </section>
 
-        <div className="property-grid">
-          {loading ? (
-            <p>Loading Houses...</p>
-          ) : houseProperties.length > 0 ? (
-            houseProperties.map((p) => (
-              <PropertyCard key={p.id} property={p} />
-            ))
-          ) : (
-            <p>No houses found at the moment.</p>
-          )}
+      <section className="home-section">
+        <div className="section-header">
+          <div className="section-title-group">
+            <span className="section-icon">🏠</span>
+            <div>
+              <h2>{loading ? "Loading…" : `${houseProperties.length} House${houseProperties.length !== 1 ? "s" : ""} Available`}</h2>
+              <p className="section-sub">Residential properties for families and investors</p>
+            </div>
+          </div>
         </div>
-      </div>
+
+        {loading ? (
+          <div className="loading-grid">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton-img" />
+                <div className="skeleton-body">
+                  <div className="skeleton-line medium" />
+                  <div className="skeleton-line short" />
+                  <div className="skeleton-line medium" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : houseProperties.length > 0 ? (
+          <div className="property-grid">
+            {houseProperties.map((p) => (
+              <PropertyCard key={p.id} property={p} />
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <div className="empty-state-icon">🏠</div>
+            <p>No houses found at the moment. Check back soon!</p>
+          </div>
+        )}
+      </section>
     </div>
   );
 };

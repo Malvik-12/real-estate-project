@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import PropertyCard from "../components/PropertyCard";
-import "../styles/Home.css"; // Reuse your existing grid and layout styles
+import "../styles/Home.css";
+import { API_BASE_URL } from "../utils/api";
 
 const ForSale = () => {
   const [allProperties, setAllProperties] = useState([]);
@@ -9,7 +10,7 @@ const ForSale = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/properties");
+        const res = await fetch(`${API_BASE_URL}/api/properties`);
         const data = await res.json();
         setAllProperties(data);
       } catch (err) {
@@ -21,31 +22,54 @@ const ForSale = () => {
     fetchProperties();
   }, []);
 
-  // Filter for "For Sale" category
   const forSaleProperties = useMemo(() => {
     return allProperties.filter(p => p.type === 'forsale');
   }, [allProperties]);
 
   return (
-    <div className="home">
-      <header className="page-header">
-        <h1>Properties For Sale</h1>
-        <p>Exclusive investment opportunities and residential listings.</p>
-      </header>
+    <div>
+      <section className="subpage-hero">
+        <h1>🏷️ Properties For Sale</h1>
+        <p>Exclusive investment opportunities and residential listings</p>
+      </section>
 
-      <div className="property-grid">
+      <section className="home-section">
+        <div className="section-header">
+          <div className="section-title-group">
+            <span className="section-icon">🏷️</span>
+            <div>
+              <h2>{loading ? "Loading…" : `${forSaleProperties.length} Propert${forSaleProperties.length !== 1 ? "ies" : "y"} For Sale`}</h2>
+              <p className="section-sub">Browse our exclusive for-sale listings</p>
+            </div>
+          </div>
+        </div>
+
         {loading ? (
-          <div className="loading-state">Fetching listings...</div>
+          <div className="loading-grid">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton-img" />
+                <div className="skeleton-body">
+                  <div className="skeleton-line medium" />
+                  <div className="skeleton-line short" />
+                  <div className="skeleton-line medium" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : forSaleProperties.length > 0 ? (
-          forSaleProperties.map((p) => (
-            <PropertyCard key={p.id || p._id} property={p} />
-          ))
+          <div className="property-grid">
+            {forSaleProperties.map((p) => (
+              <PropertyCard key={p.id || p._id} property={p} />
+            ))}
+          </div>
         ) : (
-          <div className="no-results">
+          <div className="empty-state">
+            <div className="empty-state-icon">🏷️</div>
             <p>No properties currently marked for sale.</p>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 };
