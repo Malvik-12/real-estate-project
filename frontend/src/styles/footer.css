@@ -4,9 +4,10 @@
 
 .footer {
   background: linear-gradient(135deg, #1e2a3a 0%, #151f2b 100%);
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
   padding: 52px 24px 24px;
   margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .footer-content {
@@ -14,13 +15,16 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  gap: 48px;
   padding-bottom: 40px;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-@media (max-width: 640px) {
-  .footer-content { grid-template-columns: 1fr; gap: 28px; }
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
 /* Brand block */
@@ -28,90 +32,133 @@
   font-size: 20px;
   font-weight: 800;
   color: #fff;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 8px;
+  line-height: 1.3;
 }
 
 .footer-brand p {
   font-size: 14px;
   line-height: 1.7;
-  color: rgba(255,255,255,0.65);
-  max-width: 300px;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 440px;
 }
 
 /* Contact info */
 .contact-info h3 {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
-  color: #fff;
-  margin-bottom: 14px;
+  color: #94a3b8;
+  margin-bottom: 16px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-size: 12px;
 }
 
 .contact-info p {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: rgba(255,255,255,0.75);
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.contact-icon {
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .contact-info a {
-  color: rgba(255,255,255,0.85);
+  color: #ffffff;
   text-decoration: none;
-  transition: color 0.2s;
+  font-weight: 500;
+  transition: color 0.2s, text-decoration 0.2s;
 }
-.contact-info a:hover { color: #ffcc00; }
+.contact-info a:hover {
+  color: #38bdf8;
+  text-decoration: underline;
+}
 
-/* Social */
+/* Social Section */
+.social-links {
+  margin-top: 22px;
+}
+
 .social-links h3 {
   font-size: 12px;
   font-weight: 700;
-  color: #fff;
-  margin-bottom: 14px;
+  color: #94a3b8;
+  margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .social-icons {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.social-icons a {
-  display: flex;
+.social-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: rgba(255,255,255,0.1);
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 10px;
-  transition: background 0.2s, transform 0.2s;
-  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
 }
 
-.social-icons a:hover {
-  background: rgba(255,255,255,0.22);
-  transform: translateY(-2px);
+.social-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  color: #ffffff;
 }
 
-.social-icons img {
-  width: 20px;
-  height: 20px;
-  filter: brightness(0) invert(1);
-  object-fit: contain;
+/* Brand-specific hover accents */
+.social-btn.facebook:hover {
+  background: #1877f2;
+  border-color: #1877f2;
+  box-shadow: 0 4px 14px rgba(24, 119, 242, 0.4);
 }
 
-/* Bottom bar */
+.social-btn.instagram:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border-color: #dc2743;
+  box-shadow: 0 4px 14px rgba(220, 39, 67, 0.4);
+}
+
+.social-btn.whatsapp:hover {
+  background: #25d366;
+  border-color: #25d366;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+}
+
+.social-btn.linkedin:hover {
+  background: #0a66c2;
+  border-color: #0a66c2;
+  box-shadow: 0 4px 14px rgba(10, 102, 194, 0.4);
+}
+
+.social-btn.twitter:hover {
+  background: #000000;
+  border-color: #333333;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
+}
+
+/* Bottom copyright bar */
 .footer-bottom {
   max-width: 1280px;
-  margin: 24px auto 0;
+  margin: 28px auto 0;
   text-align: center;
   font-size: 13px;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.3px;
 }
