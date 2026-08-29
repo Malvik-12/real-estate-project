@@ -64,6 +64,16 @@ const inquiryLimiter = rateLimit({
 // inside the public/uploads folder.
 app.use(express.static(path.join(__dirname, "../public")));
 
+// --- Root Welcome Route ---
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "Bahumukhi Real Estate API is Live 🚀",
+    message: "Backend services are active.",
+    health: "/health",
+    properties: "/api/properties",
+  });
+});
+
 // --- Health check ---
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "Backend is running" });
