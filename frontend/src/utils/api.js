@@ -1,10 +1,7 @@
 // Central API configuration
-// All fetch calls should import API_BASE_URL from here instead of hardcoding localhost.
-// To change the backend URL, update VITE_API_URL in the frontend .env file.
-
+// Connected directly to live Render backend
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || "https://real-estate-project-thg8.onrender.com";
-
 
 // Legacy helper kept for backward compatibility
 export const fetchProperties = async (type) => {
