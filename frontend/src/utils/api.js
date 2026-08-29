@@ -3,10 +3,7 @@
 // To change the backend URL, update VITE_API_URL in the frontend .env file.
 
 export const API_BASE_URL =
-  import.meta.env.VITE_API_URL ||
-  (typeof window !== "undefined" && window.location.hostname === "localhost"
-    ? "http://localhost:5001"
-    : "https://real-estate-project-thg8.onrender.com");
+  import.meta.env.VITE_API_URL || "https://real-estate-project-thg8.onrender.com";
 
 
 // Legacy helper kept for backward compatibility
