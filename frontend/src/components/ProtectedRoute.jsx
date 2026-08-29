@@ -3,12 +3,13 @@ import { Navigate } from "react-router-dom";
 
 /**
  * ProtectedRoute — wraps admin pages.
- * If the user hasn't authenticated this session, redirects to /admin/login.
+ * Checks for a valid JWT token in sessionStorage.
+ * If no token exists, redirects to /admin/login.
  */
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = sessionStorage.getItem("admin_authenticated") === "true";
+  const token = sessionStorage.getItem("admin_token");
 
-  if (!isAuthenticated) {
+  if (!token) {
     return <Navigate to="/admin/login" replace />;
   }
 

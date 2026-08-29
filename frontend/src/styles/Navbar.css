@@ -9,8 +9,8 @@
   justify-content: space-between;
   padding: 0 32px;
   height: 64px;
-  background: linear-gradient(90deg, #0b3d91 0%, #1565c0 100%);
-  box-shadow: 0 2px 12px rgba(11, 61, 145, 0.35);
+  background: linear-gradient(90deg, #1e2a3a 0%, #263445 100%);
+  box-shadow: 0 2px 12px rgba(30, 42, 58, 0.5);
 }
 
 /* --- Brand --- */
@@ -122,7 +122,7 @@
   top: 64px;
   left: 0;
   width: 100%;
-  background: #0b3d91;
+  background: #1e2a3a;
   padding: 12px 0;
   box-shadow: 0 8px 24px rgba(0,0,0,0.2);
   transform: translateY(-10px);

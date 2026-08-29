@@ -19,7 +19,7 @@ const Navbar = () => {
       {/* Brand / Logo */}
       <Link to="/" className="navbar-brand">
         <span className="navbar-logo">🏠</span>
-        <span className="navbar-company">Bahumukhi</span>
+        <span className="navbar-company"> Bahumukhi Investment Company Pvt. Ltd.</span>
       </Link>
 
       {/* Desktop Links */}

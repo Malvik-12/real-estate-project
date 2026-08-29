@@ -1,4 +1,5 @@
 import { db } from "../db/connection.js";
+import { sendInquiryEmailToAdmin } from "../utils/emailService.js";
 
 // POST: Customer submits an inquiry form
 export const createInquiry = (req, res) => {
@@ -19,7 +20,20 @@ export const createInquiry = (req, res) => {
       console.error("❌ Error saving inquiry:", err.message);
       return res.status(500).json({ error: "Database error" });
     }
+
+    // Respond immediately to the client
     res.status(201).json({ message: "✅ Inquiry sent successfully!", inquiryId: result.insertId });
+
+    // Asynchronously fetch property details and dispatch email to admin
+    db.query("SELECT * FROM properties WHERE id = ?", [property_id], (propErr, propResults) => {
+      const property = propResults && propResults.length > 0 ? propResults[0] : null;
+      sendInquiryEmailToAdmin(
+        { name, email, phone, message, property_id },
+        property
+      ).catch((mailErr) => {
+        console.error("⚠️ Background email sending error:", mailErr);
+      });
+    });
   });
 };
 

@@ -1,25 +1,44 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../utils/api";
 import "../styles/AdminLogin.css";
-
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "admin123";
 
 const AdminLogin = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isShaking, setIsShaking] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      sessionStorage.setItem("admin_authenticated", "true");
-      navigate("/admin");
-    } else {
-      setError("Incorrect password. Please try again.");
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        sessionStorage.setItem("admin_token", data.token);
+        navigate("/admin");
+      } else {
+        setError(data.error || "Login failed. Please try again.");
+        setIsShaking(true);
+        setTimeout(() => setIsShaking(false), 500);
+        setPassword("");
+      }
+    } catch {
+      setError("Server connection error. Please try again.");
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 500);
-      setPassword("");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -43,13 +62,14 @@ const AdminLogin = () => {
               className="admin-login-input"
               autoFocus
               required
+              disabled={isLoading}
             />
           </div>
 
           {error && <p className="admin-login-error">{error}</p>}
 
-          <button type="submit" className="admin-login-btn">
-            Login to Dashboard
+          <button type="submit" className="admin-login-btn" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login to Dashboard"}
           </button>
         </form>
 
