@@ -3,7 +3,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// Use connection pool for production resilience (auto-reconnect, handles concurrent traffic)
+const isLocalhost =
+  !process.env.DB_HOST ||
+  process.env.DB_HOST === "localhost" ||
+  process.env.DB_HOST === "127.0.0.1";
+
+// Use connection pool with auto SSL detection for remote cloud databases (Aiven/Railway)
 export const db = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
@@ -13,10 +18,7 @@ export const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  ssl:
-    process.env.DB_SSL === "true"
-      ? { rejectUnauthorized: false }
-      : undefined,
+  ssl: isLocalhost && process.env.DB_SSL !== "true" ? undefined : { rejectUnauthorized: false },
 });
 
 // Test connection on startup
