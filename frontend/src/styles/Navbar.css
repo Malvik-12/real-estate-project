@@ -4,13 +4,18 @@
   top: 0;
   z-index: 1000;
   width: 100%;
+  background: linear-gradient(90deg, #1e2a3a 0%, #263445 100%);
+  box-shadow: 0 2px 14px rgba(15, 23, 42, 0.4);
+}
+
+.navbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
-  height: 64px;
-  background: linear-gradient(90deg, #1e2a3a 0%, #263445 100%);
-  box-shadow: 0 2px 12px rgba(30, 42, 58, 0.5);
 }
 
 /* --- Brand --- */
@@ -23,15 +28,25 @@
 }
 
 .navbar-logo {
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1;
 }
 
-.navbar-company {
-  font-size: 20px;
+.navbar-company-desktop {
+  display: inline-block;
+  font-size: 19px;
   font-weight: 800;
   color: #fff;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.navbar-company-mobile {
+  display: none;
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.3px;
   white-space: nowrap;
 }
 
@@ -40,7 +55,7 @@
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   margin: 0;
   padding: 0;
 }
@@ -80,24 +95,32 @@
   border-radius: 2px;
 }
 
-/* --- Hamburger --- */
+/* --- Hamburger (mobile) --- */
 .navbar-hamburger {
   display: none;
   flex-direction: column;
-  justify-content: space-between;
-  width: 26px;
-  height: 18px;
-  background: none;
-  border: none;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.navbar-hamburger:hover {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .navbar-hamburger span {
   display: block;
   height: 2px;
-  width: 100%;
+  width: 22px;
   background: #fff;
   border-radius: 2px;
   transition: transform 0.25s, opacity 0.25s;
@@ -105,63 +128,48 @@
 
 /* Animate to X when open */
 .navbar-hamburger.open span:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
+  transform: translateY(7px) rotate(45deg);
 }
 .navbar-hamburger.open span:nth-child(2) {
   opacity: 0;
 }
 .navbar-hamburger.open span:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+  transform: translateY(-7px) rotate(-45deg);
 }
 
-/* --- Mobile drawer --- */
-.navbar-mobile-menu {
+/* --- Mobile Backdrop --- */
+.navbar-mobile-backdrop {
   display: none;
-  flex-direction: column;
-  position: absolute;
-  top: 64px;
-  left: 0;
-  width: 100%;
-  background: #1e2a3a;
-  padding: 12px 0;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  transform: translateY(-10px);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
-.navbar-mobile-menu.open {
-  display: flex;
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: all;
+@media (max-width: 960px) {
+  .navbar-mobile-backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 1001;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .navbar-mobile-backdrop.open {
+    opacity: 1;
+    pointer-events: all;
+  }
 }
 
-.mobile-link {
-  padding: 14px 32px;
-  color: rgba(255,255,255,0.85);
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
-  border-left: 3px solid transparent;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+/* --- Mobile Drawer --- */
+.navbar-mobile-drawer {
+  display: none;
 }
 
-.mobile-link:hover {
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-}
-
-.mobile-link.active {
-  color: #fff;
-  font-weight: 700;
-  border-left-color: #ffcc00;
-  background: rgba(255,255,255,0.12);
-}
-
-/* --- Responsive breakpoints --- */
-@media (max-width: 768px) {
+@media (max-width: 960px) {
   .navbar-links {
     display: none;
   }
@@ -170,7 +178,142 @@
     display: flex;
   }
 
-  .navbar {
-    position: relative; /* So mobile drawer positions relative to it */
+  .navbar-inner {
+    padding: 0 16px;
+  }
+
+  .navbar-company-desktop {
+    display: none;
+  }
+
+  .navbar-company-mobile {
+    display: inline-block;
+  }
+
+  .navbar-mobile-drawer {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 290px;
+    max-width: 85vw;
+    height: 100vh;
+    background: #192330;
+    box-shadow: -4px 0 30px rgba(0, 0, 0, 0.4);
+    z-index: 1002;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+  }
+
+  .navbar-mobile-drawer.open {
+    transform: translateX(0);
+  }
+
+  .mobile-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mobile-drawer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mobile-drawer-logo {
+    font-size: 24px;
+  }
+
+  .mobile-drawer-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .mobile-drawer-sub {
+    font-size: 10px;
+    color: #ffcc00;
+  }
+
+  .mobile-drawer-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-drawer-links {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 12px;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .mobile-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.18s;
+  }
+
+  .mobile-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+
+  .mobile-link.active {
+    background: rgba(255, 204, 0, 0.18);
+    color: #ffcc00;
+    font-weight: 700;
+  }
+
+  .mobile-drawer-footer {
+    padding: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: #141c26;
+  }
+
+  .mobile-drawer-phone {
+    display: block;
+    color: #ffcc00;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 4px;
+  }
+
+  .mobile-drawer-location {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+  }
+}
+
+/* Small phones (< 420px) */
+@media (max-width: 420px) {
+  .navbar-inner {
+    padding: 0 12px;
+  }
+
+  .navbar-company {
+    font-size: 15px;
   }
 }

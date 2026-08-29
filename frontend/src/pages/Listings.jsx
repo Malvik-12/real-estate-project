@@ -12,7 +12,12 @@ const Listings = () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/properties`);
         const data = await res.json();
-        setAllProperties(data);
+        if (Array.isArray(data)) {
+          setAllProperties(data);
+        } else {
+          console.warn("Unexpected properties format:", data);
+          setAllProperties([]);
+        }
       } catch (err) {
         console.error("Error fetching properties:", err);
       } finally {
@@ -23,7 +28,11 @@ const Listings = () => {
   }, []);
 
   const houseProperties = useMemo(() => {
-    return allProperties.filter(p => p.type === 'home');
+    if (!Array.isArray(allProperties)) return [];
+    return allProperties.filter((p) => {
+      const type = (p.type || "").toLowerCase().trim();
+      return type === "home" || type === "house" || type === "houses";
+    });
   }, [allProperties]);
 
   return (

@@ -27,6 +27,11 @@
   box-shadow: var(--shadow-lg);
 }
 
+.property-card-link:active .property-card {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
 /* ---- Image ---- */
 .image-container {
   position: relative;

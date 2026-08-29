@@ -19,6 +19,7 @@ import Footer from "./components/Footer.jsx";
 import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import MobileActionDock from "./components/MobileActionDock.jsx";
 
 // Notifications
 import { Toaster } from "react-hot-toast";
@@ -78,6 +79,7 @@ const App = () => {
         </div>
 
         <Footer />
+        <MobileActionDock />
       </Router>
     </div>
   );

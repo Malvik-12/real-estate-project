@@ -23,7 +23,11 @@ const ForSale = () => {
   }, []);
 
   const forSaleProperties = useMemo(() => {
-    return allProperties.filter(p => p.type === 'forsale');
+    if (!Array.isArray(allProperties)) return [];
+    return allProperties.filter((p) => {
+      const type = (p.type || "").toLowerCase().trim();
+      return type === "forsale" || type === "for sale" || type === "sale";
+    });
   }, [allProperties]);
 
   return (
