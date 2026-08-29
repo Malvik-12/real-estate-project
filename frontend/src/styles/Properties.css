@@ -555,9 +555,11 @@
   overflow-x: auto;
   padding-bottom: 20px;
   scrollbar-width: thin;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 .similar-properties-grid::-webkit-scrollbar {
-  height: 8px;
+  height: 6px;
 }
 .similar-properties-grid::-webkit-scrollbar-track {
   background: #f1f5f9;
@@ -574,7 +576,23 @@
   flex: 0 0 calc(33.333% - 14px);
   max-width: calc(33.333% - 14px);
   min-width: 250px;
+  scroll-snap-align: start;
 }
+
+@media (max-width: 768px) {
+  .property-detail-outer {
+    padding: 16px 14px 40px;
+  }
+  .gallery-main-img {
+    height: 260px;
+  }
+  .similar-properties-grid > * {
+    flex: 0 0 85%;
+    max-width: 85%;
+    min-width: 240px;
+  }
+}
+
 
 /* Loading */
 .page-loading {

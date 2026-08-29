@@ -23,7 +23,11 @@ const Land = () => {
   }, []);
 
   const landProperties = useMemo(() => {
-    return allProperties.filter(p => p.type === 'land');
+    if (!Array.isArray(allProperties)) return [];
+    return allProperties.filter((p) => {
+      const type = (p.type || "").toLowerCase().trim();
+      return type === "land" || type === "lands";
+    });
   }, [allProperties]);
 
   return (
