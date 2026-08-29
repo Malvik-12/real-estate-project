@@ -21,20 +21,28 @@ const AddProperty = () => {
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
-    previews.forEach(url => URL.revokeObjectURL(url));
-    const files = Array.from(e.target.files);
-    
-    if (files.length > 5) {
-      toast.error("Maximum 5 images allowed.");
-      e.target.value = ""; 
-      setPreviews([]);
-      setImageFiles([]);
+    const newFiles = Array.from(e.target.files);
+    if (newFiles.length === 0) return;
+
+    const totalFiles = imageFiles.length + newFiles.length;
+    if (totalFiles > 15) {
+      toast.error(`You can upload up to 15 images. You already have ${imageFiles.length}.`);
+      e.target.value = "";
       return;
     }
 
-    setImageFiles(files);
-    const filePreviews = files.map(file => URL.createObjectURL(file));
-    setPreviews(filePreviews);
+    const updatedFiles = [...imageFiles, ...newFiles];
+    const newPreviews = newFiles.map(file => URL.createObjectURL(file));
+    
+    setImageFiles(updatedFiles);
+    setPreviews(prev => [...prev, ...newPreviews]);
+    e.target.value = ""; // reset input so the same file can be picked again
+  };
+
+  const removeImage = (index) => {
+    URL.revokeObjectURL(previews[index]);
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -64,8 +72,12 @@ const AddProperty = () => {
     });
 
     try {
+      const token = sessionStorage.getItem("admin_token");
       const response = await fetch(`${API_BASE_URL}/api/properties`, {
         method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -158,26 +170,39 @@ const AddProperty = () => {
         
         <div style={{ border: "2px dashed #ccc", padding: "20px", textAlign: "center", borderRadius: "8px" }}>
           <label style={{ display: "block", marginBottom: "10px", fontWeight: "bold" }}>
-            Upload Photos (Max 5)
+            Upload Photos ({imageFiles.length}/15)
           </label>
           <input 
             type="file" 
             accept="image/*" 
             multiple 
             onChange={handleFileChange} 
-            required 
           />
         </div>
         
         {previews.length > 0 && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: "10px", marginTop: "10px" }}>
             {previews.map((src, index) => (
-              <img 
-                key={index} 
-                src={src} 
-                alt="Preview" 
-                style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "8px", border: "1px solid #ddd" }} 
-              />
+              <div key={index} style={{ position: "relative" }}>
+                <img 
+                  src={src} 
+                  alt="Preview" 
+                  style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "8px", border: "1px solid #ddd" }} 
+                />
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  style={{
+                    position: "absolute", top: "4px", right: "4px",
+                    background: "rgba(0,0,0,0.6)", color: "#fff",
+                    border: "none", borderRadius: "50%", width: "22px", height: "22px",
+                    cursor: "pointer", fontSize: "12px", lineHeight: "22px",
+                    display: "flex", alignItems: "center", justifyContent: "center"
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
             ))}
           </div>
         )}

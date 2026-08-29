@@ -31,8 +31,10 @@ const Admin = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this property?")) return;
+    const token = sessionStorage.getItem("admin_token");
     const deletePromise = fetch(`${API_BASE_URL}/api/properties/${id}`, { 
-      method: "DELETE" 
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${token}` },
     }).then((res) => {
       if (!res.ok) throw new Error("Failed to delete");
       setProperties(properties.filter((p) => p.id !== id));

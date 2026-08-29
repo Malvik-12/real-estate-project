@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../utils/api";
 import "../styles/Properties.css";
+import PropertyCard from "../components/PropertyCard";
 
 // Helper: convert number to Nepali words (simplified)
 const toNepaliWords = (num) => {
@@ -99,6 +100,34 @@ const Properties = () => {
   const premiumListings  = others.slice(3, 6);
   const featuredListings = others.slice(0, 4);
 
+  let similarProperties = [];
+  if (property && others.length > 0) {
+    const getSimilarityScore = (p1, p2) => {
+      let score = 0;
+      if (p1.type === p2.type) score += 50;
+      
+      const loc1 = (p1.location || "").toLowerCase();
+      const loc2 = (p2.location || "").toLowerCase();
+      if (loc1 && loc2) {
+        if (loc1 === loc2) score += 30;
+        else if (loc1.includes(loc2) || loc2.includes(loc1)) score += 15;
+      }
+      
+      const price1 = Number(p1.price);
+      const price2 = Number(p2.price);
+      if (price1 && price2) {
+        const diffRatio = Math.abs(price1 - price2) / Math.max(price1, price2);
+        if (diffRatio <= 0.3) score += 20;
+      }
+      
+      return score;
+    };
+
+    similarProperties = [...others]
+      .sort((a, b) => getSimilarityScore(property, b) - getSimilarityScore(property, a))
+      .slice(0, 3);
+  }
+
   const mainImgSrc = images.length > 0
     ? `${API_BASE_URL}${images[activeImg]}`
     : "https://placehold.co/800x420?text=No+Image";
@@ -171,9 +200,25 @@ const Properties = () => {
               onError={(e) => e.target.src = "https://placehold.co/800x420?text=No+Image"}
             />
             {images.length > 1 && (
-              <div className="gallery-count-badge">
-                📷 {activeImg + 1} / {images.length}
-              </div>
+              <>
+                <button
+                  className="gallery-nav-btn gallery-nav-prev"
+                  onClick={() => setActiveImg((prev) => (prev - 1 + images.length) % images.length)}
+                  aria-label="Previous image"
+                >
+                  ‹
+                </button>
+                <button
+                  className="gallery-nav-btn gallery-nav-next"
+                  onClick={() => setActiveImg((prev) => (prev + 1) % images.length)}
+                  aria-label="Next image"
+                >
+                  ›
+                </button>
+                <div className="gallery-count-badge">
+                  📷 {activeImg + 1} / {images.length}
+                </div>
+              </>
             )}
           </div>
 
@@ -334,6 +379,20 @@ const Properties = () => {
                   </form>
                 </>
               )}
+            </div>
+          )}
+
+          {/* Similar Properties */}
+          {similarProperties.length > 0 && (
+            <div className="similar-properties-section" style={{ marginTop: "40px" }}>
+              <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 20, color: "var(--text-primary)", borderBottom: "2px solid #eaeaea", paddingBottom: "10px" }}>
+                Similar Properties
+              </h3>
+              <div className="similar-properties-grid">
+                {similarProperties.map(p => (
+                  <PropertyCard key={p.id} property={p} />
+                ))}
+              </div>
             </div>
           )}
         </div>

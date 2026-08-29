@@ -7,7 +7,10 @@ const InquiryList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/inquiries`)
+    const token = sessionStorage.getItem("admin_token");
+    fetch(`${API_BASE_URL}/api/inquiries`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    })
       .then((res) => res.json())
       .then((data) => {
         setInquiries(data);

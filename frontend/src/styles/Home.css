@@ -4,7 +4,7 @@
 
 /* ---- Hero Section ---- */
 .hero {
-  background: linear-gradient(135deg, #0b3d91 0%, #1a237e 50%, #0d47a1 100%);
+  background: linear-gradient(135deg, #1e2a3a 0%, #263445 50%, #1e2a3a 100%);
   padding: 80px 24px 100px;
   text-align: center;
   position: relative;
@@ -123,7 +123,7 @@
 }
 
 .search-btn {
-  background: linear-gradient(135deg, #0b3d91, #1565c0);
+  background: linear-gradient(135deg, #1e2a3a, #34495e);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -138,7 +138,7 @@
 
 .search-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(11,61,145,0.4);
+  box-shadow: 0 6px 20px rgba(30,42,58,0.4);
 }
 
 /* ---- Category Stats ---- */
@@ -270,7 +270,7 @@
 
 .section-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #0b3d91, #1565c0);
+  background: linear-gradient(135deg, #1e2a3a, #34495e);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -294,7 +294,7 @@
   white-space: nowrap;
   transition: color 0.15s;
 }
-.view-all-link:hover { color: #1565c0; text-decoration: underline; }
+.view-all-link:hover { color: #34495e; text-decoration: underline; }
 
 /* ---- Carousel Controls ---- */
 .carousel-controls {
@@ -359,7 +359,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: linear-gradient(135deg, #0b3d91, #1565c0);
+  background: linear-gradient(135deg, #1e2a3a, #34495e);
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -386,7 +386,7 @@
 
 /* ---- Subpage hero (Listings, Lands, ForSale pages) ---- */
 .subpage-hero {
-  background: linear-gradient(135deg, #0b3d91 0%, #1565c0 100%);
+  background: linear-gradient(135deg, #1e2a3a 0%, #34495e 100%);
   padding: 60px 24px;
   text-align: center;
   color: #fff;

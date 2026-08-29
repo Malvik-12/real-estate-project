@@ -1,8 +1,8 @@
-import "../styles/footer.css";
 import facebookIcon from "../assets/icons/facebook.png";
-import twitterIcon from "../assets/icons/twitter.png";
 import instagramIcon from "../assets/icons/instagram.png";
 import linkedinIcon from "../assets/icons/linkedin.png";
+import twitterIcon from "../assets/icons/twitter.png";
+import "../styles/footer.css";
 
 const Footer = () => {
   return (
@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="footer-content">
         {/* Brand block */}
         <div className="footer-brand">
-          <h3>🏠 Bahumukhi Investment</h3>
+          <h3>🏠 Bahumukhi Investment Company Pvt. Ltd.</h3>
           <p>
             Nepal's trusted real estate partner since inception. We help families and investors
             find premium properties — houses, lands, and exclusive listings across the country.

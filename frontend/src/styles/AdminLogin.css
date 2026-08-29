@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0b3d91 0%, #1a237e 50%, #0d47a1 100%);
+  background: linear-gradient(135deg, #1e2a3a 0%, #263445 50%, #1e2a3a 100%);
   padding: 20px;
 }
 
@@ -44,7 +44,7 @@
 .admin-login-title {
   font-size: 28px;
   font-weight: 700;
-  color: #0b3d91;
+  color: #1e2a3a;
   margin-bottom: 8px;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .admin-login-input:focus {
-  border-color: #0b3d91;
+  border-color: #1e2a3a;
 }
 
 .admin-login-error {
@@ -89,7 +89,7 @@
 
 .admin-login-btn {
   padding: 14px;
-  background: linear-gradient(135deg, #0b3d91, #1565c0);
+  background: linear-gradient(135deg, #1e2a3a, #34495e);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -121,5 +121,5 @@
 }
 
 .admin-login-back a:hover {
-  color: #0b3d91;
+  color: #1e2a3a;
 }

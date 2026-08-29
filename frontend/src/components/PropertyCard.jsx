@@ -4,7 +4,7 @@ import "../styles/PropertyCard.css";
 import { API_BASE_URL } from "../utils/api";
 
 const TYPE_CONFIG = {
-  home:    { label: "House",    color: "#0b3d91" },
+  home:    { label: "House",    color: "#1e2a3a" },
   land:    { label: "Land",     color: "#7c3aed" },
   forsale: { label: "For Sale", color: "#dc2626" },
 };

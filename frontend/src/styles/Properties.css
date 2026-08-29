@@ -66,6 +66,33 @@
   padding: 5px 12px;
   border-radius: 99px;
 }
+
+/* Gallery Navigation Arrows */
+.gallery-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+}
+.gallery-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: translateY(-50%) scale(1.1);
+}
+.gallery-nav-prev { left: 14px; }
+.gallery-nav-next { right: 14px; }
 .gallery-thumbs {
   display: flex;
   gap: 8px;
@@ -185,7 +212,7 @@
 }
 .property-type-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #0b3d91, #1565c0);
+  background: linear-gradient(135deg, #1e2a3a, #34495e);
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -225,7 +252,7 @@
 }
 .property-tab:last-child { border-right: none; }
 .property-tab.active {
-  background: linear-gradient(135deg, #0b3d91, #1565c0);
+  background: linear-gradient(135deg, #1e2a3a, #34495e);
   color: #fff;
 }
 .property-tab:not(.active):hover { background: var(--bg); }
@@ -359,7 +386,7 @@
 .form-textarea { resize: vertical; min-height: 100px; }
 .submit-btn {
   padding: 14px;
-  background: linear-gradient(135deg, #0b3d91, #1565c0);
+  background: linear-gradient(135deg, #1e2a3a, #34495e);
   color: #fff;
   border: none;
   border-radius: var(--radius-sm);
@@ -412,7 +439,7 @@
   box-shadow: var(--shadow-sm);
 }
 .sidebar-box-header {
-  background: linear-gradient(135deg, #0b3d91, #1565c0);
+  background: linear-gradient(135deg, #1e2a3a, #34495e);
   color: #fff;
   padding: 13px 16px;
   font-size: 14px;
@@ -520,6 +547,34 @@
   transition: opacity 0.2s;
 }
 .sidebar-call-btn:hover { opacity: 0.9; }
+
+/* Similar Properties */
+.similar-properties-grid {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+  scrollbar-width: thin;
+}
+.similar-properties-grid::-webkit-scrollbar {
+  height: 8px;
+}
+.similar-properties-grid::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+.similar-properties-grid::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.similar-properties-grid::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+.similar-properties-grid > * {
+  flex: 0 0 calc(33.333% - 14px);
+  max-width: calc(33.333% - 14px);
+  min-width: 250px;
+}
 
 /* Loading */
 .page-loading {

@@ -18,6 +18,7 @@ import AdminLogin from "./pages/AdminLogin.jsx";
 import Footer from "./components/Footer.jsx";
 import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 // Notifications
 import { Toaster } from "react-hot-toast";
@@ -38,6 +39,7 @@ const App = () => {
       />
 
       <Router>
+        <ScrollToTop />
         {/* Redesigned sticky navbar with active-link highlighting */}
         <Navbar />
 
