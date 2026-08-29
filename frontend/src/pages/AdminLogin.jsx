@@ -22,19 +22,20 @@ const AdminLogin = () => {
         body: JSON.stringify({ password }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (res.ok && data.token) {
         sessionStorage.setItem("admin_token", data.token);
         navigate("/admin");
       } else {
-        setError(data.error || "Login failed. Please try again.");
+        setError(data.error || `Login failed (${res.status}). Please check your password.`);
         setIsShaking(true);
         setTimeout(() => setIsShaking(false), 500);
         setPassword("");
       }
-    } catch {
-      setError("Server connection error. Please try again.");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(`Connection error: ${err.message || "Failed to reach server"}.`);
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 500);
     } finally {
