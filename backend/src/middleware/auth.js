@@ -1,8 +1,15 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
 
-const JWT_SECRET = process.env.JWT_SECRET;
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
+dotenv.config();
+
+// Default fallback hash for 'admin123' and fallback JWT secret
+const DEFAULT_ADMIN_HASH = "$2b$12$UIUksvGNYDX9DyvM6ciZmOp3IFnNn03vDa8YJo16ZisXRjGRSCTtK";
+const DEFAULT_JWT_SECRET = "bahumukhi_real_estate_jwt_secret_key_2026_secure";
+
+const getAdminPasswordHash = () => (process.env.ADMIN_PASSWORD_HASH?.trim()) || DEFAULT_ADMIN_HASH;
+const getJwtSecret = () => (process.env.JWT_SECRET?.trim()) || DEFAULT_JWT_SECRET;
 
 /**
  * POST /api/admin/login
@@ -16,19 +23,22 @@ export const adminLogin = async (req, res) => {
   }
 
   try {
-    const isMatch = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+    const adminHash = getAdminPasswordHash();
+    const jwtSecret = getJwtSecret();
+
+    const isMatch = await bcrypt.compare(password, adminHash);
 
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid password." });
     }
 
     // Create JWT token — expires in 8 hours
-    const token = jwt.sign({ role: "admin" }, JWT_SECRET, { expiresIn: "8h" });
+    const token = jwt.sign({ role: "admin" }, jwtSecret, { expiresIn: "8h" });
 
-    res.json({ message: "Login successful", token });
+    return res.json({ message: "Login successful", token });
   } catch (err) {
     console.error("Login error:", err);
-    res.status(500).json({ error: "Server error during authentication." });
+    return res.status(500).json({ error: "Server error during authentication: " + err.message });
   }
 };
 
@@ -46,7 +56,8 @@ export const verifyToken = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const jwtSecret = getJwtSecret();
+    const decoded = jwt.verify(token, jwtSecret);
     req.admin = decoded;
     next();
   } catch (err) {
