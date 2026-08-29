@@ -27,7 +27,7 @@ if (
 
 const isLocalhost = host === "localhost" || host === "127.0.0.1";
 
-console.log(`📡 [DB] Connecting to MySQL Host: ${host} | Port: ${port} | User: ${user} | DB: ${database} | SSL: ${!isLocalhost}`);
+console.log(`📡 [DB] Connecting to MySQL Host: ${host} | Port: ${port} | User: ${user} | DB: ${database} | PassLength: ${password.length} | SSL: ${!isLocalhost}`);
 
 // Create resilient connection pool
 export const db = mysql.createPool({
