@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="roof-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded App Icon Background -->
+  <rect width="64" height="64" rx="14" fill="url(#bg-grad)"/>
+
+  <!-- Chimney -->
+  <rect x="39" y="16" width="6" height="12" rx="1" fill="#94a3b8"/>
+
+  <!-- Roof Peak -->
+  <path d="M32 14 L12 30 L16 33 L32 20 L48 33 L52 30 Z" fill="url(#roof-grad)"/>
+
+  <!-- House Body -->
+  <path d="M17 31 L47 31 L47 48 C47 50 45 52 43 52 L21 52 C19 52 17 50 17 48 Z" fill="#ffffff"/>
+
+  <!-- Door -->
+  <path d="M28 52 L28 40 C28 38.5 29.5 37 32 37 C34.5 37 36 38.5 36 40 L36 52 Z" fill="#1e293b"/>
+
+  <!-- Modern Window -->
+  <rect x="21" y="36" width="5" height="5" rx="1" fill="url(#accent-grad)"/>
+  <rect x="38" y="36" width="5" height="5" rx="1" fill="url(#accent-grad)"/>
+
+  <!-- Small Gold Star / Sparkle in Top Corner -->
+  <circle cx="48" cy="16" r="2" fill="#fbbf24"/>
+</svg>
