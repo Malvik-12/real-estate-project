@@ -20,10 +20,15 @@ app.use(helmet({
 }));
 
 // --- CORS Configuration ---
+const allowedOrigins = process.env.FRONTEND_URL
+  ? [process.env.FRONTEND_URL]
+  : true; // allow all in local dev when FRONTEND_URL is not set
+
 app.use(cors({
-  origin: true,
+  origin: allowedOrigins,
   credentials: true,
 }));
+
 
 // --- Body Parsing ---
 app.use(express.json({ limit: "1mb" }));

@@ -78,8 +78,10 @@ const PropertyCard = ({ property }) => {
           <div className="property-stats">
             <span>📐 {area}</span>
             <span>🛏️ {beds} Bed</span>
-            {/* 2. DYNAMIC PARKING: Shows the real number from DB */}
-            <span>🚗 {parking} {parking === 1 ? 'Car' : 'Cars'}</span>
+            {/* Only show parking for non-land properties */}
+            {type !== "land" && (
+              <span>🚗 {parking} {parking === 1 ? 'Car' : 'Cars'}</span>
+            )}
           </div>
           
           <div className="view-details-tag">

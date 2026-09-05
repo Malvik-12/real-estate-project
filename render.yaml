@@ -11,3 +11,39 @@ services:
         value: production
       - key: PORT
         value: 5001
+      # ── Aiven MySQL ─────────────────────────────────────────────────────
+      # Set these in the Render dashboard (Environment tab) — do NOT commit
+      # real values here.
+      - key: DB_HOST
+        sync: false   # fill in Render dashboard
+      - key: DB_PORT
+        sync: false   # 16899 (Aiven default)
+      - key: DB_USER
+        sync: false   # avnadmin
+      - key: DB_PASSWORD
+        sync: false   # your Aiven password
+      - key: DB_NAME
+        sync: false   # defaultdb
+      # ── Auth ────────────────────────────────────────────────────────────
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      # ── Frontend CORS ───────────────────────────────────────────────────
+      - key: FRONTEND_URL
+        sync: false
+      # ── Email (SMTP) ─────────────────────────────────────────────────────
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_SECURE
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
