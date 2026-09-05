@@ -47,6 +47,12 @@ const Home = () => {
     [allProperties]
   );
 
+  // Sorted by highest price — used for "Top Listing" section
+  const byPrice = useMemo(() =>
+    [...allProperties].sort((a, b) => Number(b.price) - Number(a.price)),
+    [allProperties]
+  );
+
   const houses  = useMemo(() => byNewest.filter(p => p.type === "home"),    [byNewest]);
   const lands   = useMemo(() => byNewest.filter(p => p.type === "land"),    [byNewest]);
   const forsale = useMemo(() => byNewest.filter(p => p.type === "forsale"), [byNewest]);
@@ -243,7 +249,7 @@ const Home = () => {
             title="Top Listing"
             icon="🏆"
             viewAllLink="/listings"
-            items={byNewest}
+            items={byPrice}
             pageKey="top"
           />
 
@@ -270,7 +276,7 @@ const Home = () => {
 
           {(loading || lands.length > 0) && (
             <ListingSection
-              title="Land &amp; Plots"
+              title="Land & Plots"
               icon="🌿"
               badge={`${lands.length} Available`}
               viewAllLink="/lands"

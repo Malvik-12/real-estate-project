@@ -112,6 +112,7 @@ const Admin = () => {
                       <td style={cellStyle}>🚗 {p.parking || "None"}</td> {/* NEW PARKING CELL */}
                       <td style={{ ...cellStyle, textTransform: "capitalize" }}>{p.type}</td>
                       <td style={cellStyle}>
+                        <Link to={`/admin/edit/${p.id}`} style={editBtnStyle}>Edit</Link>
                         <button onClick={() => handleDelete(p.id)} style={deleteBtnStyle}>Delete</button>
                       </td>
                     </tr>
@@ -137,6 +138,7 @@ const Admin = () => {
 // ... Styles remain the same ...
 const cellStyle = { padding: "12px" };
 const addBtnStyle = { padding: "10px 20px", background: "#28a745", color: "#fff", textDecoration: "none", borderRadius: "6px", fontWeight: "bold" };
+const editBtnStyle = { color: "#0066cc", border: "none", cursor: "pointer", background: "none", fontWeight: "bold", textDecoration: "none", marginRight: "10px", fontSize: "14px" };
 const deleteBtnStyle = { color: "#dc3545", border: "none", cursor: "pointer", background: "none", fontWeight: "bold" };
 const badgeStyle = { position: "absolute", bottom: "15px", right: "15px", backgroundColor: "rgba(0,0,0,0.8)", color: "#fff", fontSize: "10px", padding: "2px 4px", borderRadius: "3px" };
 const activeTabBtn = { padding: "12px 20px", border: "none", background: "none", borderBottom: "4px solid #000", fontWeight: "bold", cursor: "pointer", fontSize: "16px" };

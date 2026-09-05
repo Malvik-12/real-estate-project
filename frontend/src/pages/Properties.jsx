@@ -34,10 +34,12 @@ const Properties = () => {
       .then((res) => res.json())
       .then((data) => {
         setProperty(data);
-        const parsed = typeof data.image_url === "string"
-          ? JSON.parse(data.image_url)
-          : data.image_url;
-        setImages(parsed || []);
+        // mysql2 auto-parses JSON columns — handle both string and array
+        let imgs = data.image_url;
+        if (typeof imgs === "string") {
+          try { imgs = JSON.parse(imgs); } catch { imgs = []; }
+        }
+        setImages(Array.isArray(imgs) ? imgs : []);
         setActiveImg(0);
         setLoading(false);
       })
@@ -134,12 +136,12 @@ const Properties = () => {
 
   const timeslots = ["10:00 AM", "11:30 AM", "2:00 PM", "3:30 PM", "5:00 PM"];
 
-  // Features to display
+  // Features to display (parking hidden for land properties)
   const features = [
     { icon: "🏠", label: "Type",     value: typeLabelMap[property.type] || property.type },
     { icon: "📐", label: "Area",     value: property.area || "N/A" },
-    { icon: "🛏️", label: "Bedroom", value: `${property.beds || 0} Bed` },
-    { icon: "🚗", label: "Parking",  value: `${property.parking || 0} Car${property.parking !== 1 ? "s" : ""}` },
+    ...(property.type !== "land" ? [{ icon: "🛏️", label: "Bedroom", value: `${property.beds || 0} Bed` }] : []),
+    ...(property.type !== "land" ? [{ icon: "🚗", label: "Parking",  value: `${property.parking || 0} Car${property.parking !== 1 ? "s" : ""}` }] : []),
     { icon: "📅", label: "Listed",   value: property.created_at ? new Date(property.created_at).toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" }) : "—" },
     { icon: "📍", label: "Location", value: property.location || "Nepal" },
   ];
